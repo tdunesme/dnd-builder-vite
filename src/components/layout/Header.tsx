@@ -10,8 +10,10 @@ import { ModeToggle } from '@/components/ui/mode-toggle'
 import { useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import type { AuthUser } from '@/services/auth/auth.service'
+import { useLogout } from '@/hooks/auth/useLogout'
 
 export function Header() {
+  const logout = useLogout()
   const queryClient = useQueryClient()
   const user: AuthUser | undefined = queryClient.getQueryData(['me'])
   const isAuthenticated = !!user
@@ -41,7 +43,7 @@ export function Header() {
             <DropdownMenuContent align="end">
               <DropdownMenuItem>Profile</DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem className="text-red-600">
+              <DropdownMenuItem className="text-red-600" onClick={logout}>
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>

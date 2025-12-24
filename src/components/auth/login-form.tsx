@@ -8,6 +8,7 @@ import { login } from '@/services/auth/auth.service'
 import { useMutation } from '@tanstack/react-query'
 import { Spinner } from '../ui/spinner'
 import { setAccessToken } from '@/lib/auth/auth.storage'
+import { toast } from 'sonner'
 
 interface LoginFormValues {
   email: string
@@ -20,7 +21,15 @@ export function LoginForm() {
     mutationFn: login,
     onSuccess: data => {
       setAccessToken(data.accessToken)
+      toast.success('You have been logged in', {
+        description: 'You have been logged in successfully.',
+      })
       navigate({ to: '/' })
+    },
+    onError: error => {
+      toast.error('Error while logging in', {
+        description: error.message,
+      })
     },
   })
   const defaultValues: LoginFormValues = { email: '', password: '' }
@@ -81,11 +90,6 @@ export function LoginForm() {
           >
             {loginMutation.isPending ? <Spinner className="size-4" /> : 'Login'}
           </Button>
-          {loginMutation.isError && (
-            <p className="text-sm text-destructive text-center">
-              {loginMutation.error.message}
-            </p>
-          )}
           <div className="text-center">
             <span>Don&apos;t have an account? </span>
             <Link className="link" to="/auth/signup">

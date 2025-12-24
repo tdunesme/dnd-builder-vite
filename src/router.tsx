@@ -14,7 +14,8 @@ import { LoginPage } from '@/pages/auth/LoginPage'
 import { SignupPage } from '@/pages/auth/SignupPage'
 import { CharactersPage } from '@/pages/character/CharactersPage'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-import { getAccessToken } from './lib/auth/auth.storage'
+import { getMe } from './services/auth/auth.service'
+import { queryClient } from './lib/query/queryClient'
 
 const rootRoute = new RootRoute({
   component: () => (
@@ -38,6 +39,17 @@ const authRoute = new Route({
   getParentRoute: () => rootRoute,
   path: '/auth',
   component: AuthLayout,
+  beforeLoad: async () => {
+    try {
+      await queryClient.ensureQueryData({
+        queryKey: ['me'],
+        queryFn: getMe,
+      })
+      throw redirect({ to: '/characters' })
+    } catch {
+      return
+    }
+  },
 })
 
 const loginRoute = new Route({
@@ -67,9 +79,13 @@ const appRoute = new Route({
   getParentRoute: () => rootRoute,
   id: 'app',
   component: AppLayout,
-  beforeLoad: () => {
-    const token = getAccessToken()
-    if (!token) {
+  beforeLoad: async () => {
+    try {
+      await queryClient.ensureQueryData({
+        queryKey: ['me'],
+        queryFn: getMe,
+      })
+    } catch {
       throw redirect({ to: '/auth/login' })
     }
   },
