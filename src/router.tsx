@@ -1,0 +1,77 @@
+import {
+  RootRoute,
+  Route,
+  Router,
+  Outlet,
+  redirect,
+} from '@tanstack/react-router'
+
+import { AppLayout } from '@/layouts/AppLayout'
+import { AuthLayout } from '@/layouts/AuthLayout'
+
+// Pages (UI only pour l’instant)
+import { LoginPage } from '@/pages/auth/LoginPage'
+import { SignupPage } from '@/pages/auth/SignupPage'
+import { CharactersPage } from '@/pages/character/CharactersPage'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+
+const rootRoute = new RootRoute({
+  component: () => (
+    <div className="min-h-screen">
+      <Outlet />
+      <TanStackRouterDevtools />
+    </div>
+  ),
+  notFoundComponent: () => <div className="p-6">Page not found</div>,
+})
+
+/* Auth Routes */
+
+const authRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: '/auth',
+  component: AuthLayout,
+})
+
+const loginRoute = new Route({
+  getParentRoute: () => authRoute,
+  path: 'login',
+  component: LoginPage,
+})
+
+const signupRoute = new Route({
+  getParentRoute: () => authRoute,
+  path: 'signup',
+  component: SignupPage,
+})
+
+/* App Routes */
+const indexRoute = new Route({
+  getParentRoute: () => rootRoute,
+  id: 'index',
+  beforeLoad: () => {
+    throw redirect({
+      to: '/characters',
+    })
+  },
+})
+
+const appRoute = new Route({
+  getParentRoute: () => rootRoute,
+  id: 'app',
+  component: AppLayout,
+})
+
+const charactersRoute = new Route({
+  getParentRoute: () => appRoute,
+  path: 'characters',
+  component: CharactersPage,
+})
+
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  authRoute.addChildren([loginRoute, signupRoute]),
+  appRoute.addChildren([charactersRoute]),
+])
+
+export const router = new Router({ routeTree })
