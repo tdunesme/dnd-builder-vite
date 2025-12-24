@@ -7,11 +7,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { ModeToggle } from '@/components/ui/mode-toggle'
+import { useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
+import type { AuthUser } from '@/services/auth/auth.service'
 
 export function Header() {
-  const isAuthenticated = false // TEMPORAIRE
-
+  const queryClient = useQueryClient()
+  const user: AuthUser | undefined = queryClient.getQueryData(['me'])
+  const isAuthenticated = !!user
+  const userInitial =
+    (user?.firstName?.charAt(0) ?? '') + (user?.lastName?.charAt(0) ?? '')
   return (
     <header className="h-14 border-b bg-background flex items-center justify-between px-4">
       {/* Left */}
@@ -28,7 +33,7 @@ export function Header() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 rounded-full p-0">
                 <Avatar className="h-8 w-8">
-                  <AvatarFallback>U</AvatarFallback>
+                  <AvatarFallback>{userInitial}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>

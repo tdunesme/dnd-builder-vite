@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getAccessToken } from '../auth/auth.storage'
 
 const apiUrl = import.meta.env.VITE_API_URL
 
@@ -12,7 +13,7 @@ export const api = axios.create({
 })
 
 api.interceptors.request.use(config => {
-  const token = localStorage.getItem('access_token')
+  const token = getAccessToken()
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`

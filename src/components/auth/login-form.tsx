@@ -1,9 +1,13 @@
 import { formOptions, useForm } from '@tanstack/react-form'
 import { Button } from '@/components/ui/button'
 import { FieldGroup } from '@/components/ui/field'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { TextField } from '@/components/form/TextField'
 import { FormActions } from '../form/FormActions'
+import { login } from '@/services/auth/auth.service'
+import { useMutation } from '@tanstack/react-query'
+import { Spinner } from '../ui/spinner'
+import { setAccessToken } from '@/lib/auth/auth.storage'
 
 interface LoginFormValues {
   email: string
@@ -11,6 +15,14 @@ interface LoginFormValues {
 }
 
 export function LoginForm() {
+  const navigate = useNavigate()
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: data => {
+      setAccessToken(data.accessToken)
+      navigate({ to: '/' })
+    },
+  })
   const defaultValues: LoginFormValues = { email: '', password: '' }
   const formOpts = formOptions({
     defaultValues,
@@ -18,8 +30,7 @@ export function LoginForm() {
   const form = useForm({
     ...formOpts,
     onSubmit: async ({ value }) => {
-      // Do something with form data
-      console.log(value)
+      loginMutation.mutate(value)
     },
   })
 
@@ -63,9 +74,18 @@ export function LoginForm() {
 
         {/* SUBMIT */}
         <FormActions>
-          <Button className="w-full" type="submit">
-            Login
+          <Button
+            className="w-full"
+            type="submit"
+            disabled={loginMutation.isPending}
+          >
+            {loginMutation.isPending ? <Spinner className="size-4" /> : 'Login'}
           </Button>
+          {loginMutation.isError && (
+            <p className="text-sm text-destructive text-center">
+              {loginMutation.error.message}
+            </p>
+          )}
           <div className="text-center">
             <span>Don&apos;t have an account? </span>
             <Link className="link" to="/auth/signup">

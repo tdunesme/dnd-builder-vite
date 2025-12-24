@@ -14,12 +14,19 @@ import { LoginPage } from '@/pages/auth/LoginPage'
 import { SignupPage } from '@/pages/auth/SignupPage'
 import { CharactersPage } from '@/pages/character/CharactersPage'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { getAccessToken } from './lib/auth/auth.storage'
 
 const rootRoute = new RootRoute({
   component: () => (
     <div className="min-h-screen">
       <Outlet />
       <TanStackRouterDevtools />
+    </div>
+  ),
+  errorComponent: ({ error }) => (
+    <div className="p-6 text-red-500">
+      <h2 className="font-semibold mb-2">Error</h2>
+      <pre>{JSON.stringify(error, null, 2)}</pre>
     </div>
   ),
   notFoundComponent: () => <div className="p-6">Page not found</div>,
@@ -60,6 +67,12 @@ const appRoute = new Route({
   getParentRoute: () => rootRoute,
   id: 'app',
   component: AppLayout,
+  beforeLoad: () => {
+    const token = getAccessToken()
+    if (!token) {
+      throw redirect({ to: '/auth/login' })
+    }
+  },
 })
 
 const charactersRoute = new Route({
