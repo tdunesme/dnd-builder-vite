@@ -8,6 +8,7 @@ import {
 
 import { AppLayout } from '@/layouts/AppLayout'
 import { AuthLayout } from '@/layouts/AuthLayout'
+import { CharacterNameStep } from '@/pages/character/CharacterNameStep'
 
 // Pages (UI only pour l’instant)
 import { LoginPage } from '@/pages/auth/LoginPage'
@@ -52,6 +53,8 @@ const authRoute = new Route({
   },
 })
 
+/* Auth Routes */
+
 const loginRoute = new Route({
   getParentRoute: () => authRoute,
   path: 'login',
@@ -65,6 +68,7 @@ const signupRoute = new Route({
 })
 
 /* App Routes */
+
 const indexRoute = new Route({
   getParentRoute: () => rootRoute,
   id: 'index',
@@ -74,6 +78,8 @@ const indexRoute = new Route({
     })
   },
 })
+
+/* App Layout Route */
 
 const appRoute = new Route({
   getParentRoute: () => rootRoute,
@@ -91,16 +97,28 @@ const appRoute = new Route({
   },
 })
 
+/* Characters Routes */
+
 const charactersRoute = new Route({
   getParentRoute: () => appRoute,
   path: 'characters',
   component: CharactersPage,
 })
 
+/* Create Character Routes */
+
+const characterNameRoute = new Route({
+  getParentRoute: () => appRoute,
+  path: 'builder/{-$characterId}/name',
+  component: CharacterNameStep,
+})
+
+/* ------------------------------------------------------------ */
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   authRoute.addChildren([loginRoute, signupRoute]),
-  appRoute.addChildren([charactersRoute]),
+  appRoute.addChildren([charactersRoute, characterNameRoute]),
 ])
 
 export const router = new Router({ routeTree })

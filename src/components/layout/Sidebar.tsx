@@ -4,7 +4,7 @@ import { Link } from '@tanstack/react-router'
 
 const navItems = [
   { label: 'Characters', href: '/characters' },
-  { label: 'Create Character', href: '/characters/new' },
+  { label: 'Create Character', href: '/builder/name' },
 ]
 
 export function Sidebar() {
