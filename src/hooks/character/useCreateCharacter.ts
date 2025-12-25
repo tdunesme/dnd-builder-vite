@@ -1,19 +1,17 @@
+import { useMutation } from '@tanstack/react-query'
 import { createCharacter } from '@/services/character/character.service'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { queryClient } from '@/lib/query/queryClient'
+import { characterKeys } from '@/queries/character.queries'
 
 export function useCreateCharacter() {
-  const queryClient = useQueryClient()
-
   return useMutation({
     mutationFn: createCharacter,
-    onSuccess: character => {
-      console.log('success')
-      console.log(character)
-      queryClient.setQueryData(['character', character.id], character)
-    },
-    onError: error => {
-      console.log('error')
-      console.log(error)
+    onSuccess: data => {
+      console.log('Character created:', data)
+      queryClient.setQueryData(characterKeys.detail(data.id), data)
+      queryClient.invalidateQueries({
+        queryKey: characterKeys.lists(),
+      })
     },
   })
 }

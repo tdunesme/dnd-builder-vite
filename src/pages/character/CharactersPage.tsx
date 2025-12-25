@@ -1,4 +1,4 @@
-import { useCharacters } from '@/queries/useCharacters'
+import { useCharacters } from '@/hooks/character/useCharacters'
 
 export function CharactersPage() {
   const { data, isLoading, isError, error } = useCharacters()

@@ -105,11 +105,24 @@ const charactersRoute = new Route({
   component: CharactersPage,
 })
 
-/* Create Character Routes */
+/* Character Builder Routes */
 
-const characterNameRoute = new Route({
+const builderRoute = new Route({
   getParentRoute: () => appRoute,
-  path: 'builder/{-$characterId}/name',
+  path: 'builder',
+  component: () => <Outlet />,
+})
+
+// Route avec paramètre DOIT être définie AVANT la route statique
+const characterNameEditRoute = new Route({
+  getParentRoute: () => builderRoute,
+  path: '$characterId/name',
+  component: CharacterNameStep,
+})
+
+const characterNameCreateRoute = new Route({
+  getParentRoute: () => builderRoute,
+  path: 'name',
   component: CharacterNameStep,
 })
 
@@ -118,7 +131,13 @@ const characterNameRoute = new Route({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   authRoute.addChildren([loginRoute, signupRoute]),
-  appRoute.addChildren([charactersRoute, characterNameRoute]),
+  appRoute.addChildren([
+    charactersRoute,
+    builderRoute.addChildren([
+      characterNameEditRoute, // Route avec paramètre en premier
+      characterNameCreateRoute,
+    ]),
+  ]),
 ])
 
 export const router = new Router({ routeTree })

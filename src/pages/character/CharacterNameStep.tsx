@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FieldGroup } from '@/components/ui/field'
 import { useForm } from '@tanstack/react-form'
 import { useCreateCharacter } from '@/hooks/character/useCreateCharacter'
+import { router } from '@/router'
 
 export function CharacterNameStep() {
   const createCharacterMutation = useCreateCharacter()
@@ -13,8 +14,15 @@ export function CharacterNameStep() {
     defaultValues: {
       name: '',
     },
-    onSubmit: ({ value }) => {
-      createCharacterMutation.mutate(value.name)
+    onSubmit: async ({ value }) => {
+      createCharacterMutation.mutate(value.name, {
+        onSuccess: character => {
+          router.navigate({
+            to: '/builder/$characterId/name',
+            params: { characterId: character.id },
+          })
+        },
+      })
     },
   })
   return (
@@ -26,7 +34,13 @@ export function CharacterNameStep() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={form.handleSubmit}>
+          <form
+            onSubmit={e => {
+              e.preventDefault()
+              e.stopPropagation()
+              form.handleSubmit()
+            }}
+          >
             <FieldGroup>
               <form.Field
                 name="name"
