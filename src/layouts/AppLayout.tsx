@@ -11,14 +11,16 @@ export function AppLayout() {
     retry: false,
   })
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
       <div className="flex flex-1">
         <Sidebar />
 
-        <main className="flex-1 p-6 bg-background">
-          <Outlet />
+        <main className="flex-1 overflow-y-auto p-6 bg-background">
+          <div className="max-w-7xl mx-auto h-full flex flex-col">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

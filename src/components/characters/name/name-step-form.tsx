@@ -55,6 +55,7 @@ export function NameStepForm({
         e.stopPropagation()
         form.handleSubmit()
       }}
+      className="space-y-6"
     >
       <FieldGroup>
         <form.Field
@@ -66,8 +67,8 @@ export function NameStepForm({
           {field => <TextField field={field} label="Name" />}
         </form.Field>
         <FormActions>
-          <Button className="w-full" type="submit">
-            Next
+          <Button className="w-full" type="submit" size="lg">
+            Continue
           </Button>
         </FormActions>
       </FieldGroup>

@@ -18,10 +18,12 @@ export function Header() {
   const userInitial =
     (user?.firstName?.charAt(0) ?? '') + (user?.lastName?.charAt(0) ?? '')
   return (
-    <header className="h-14 border-b bg-background flex items-center justify-between px-4">
+    <header className="h-14 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 flex items-center justify-between px-6 sticky top-0 z-50 shadow-sm">
       {/* Left */}
       <div className="flex items-center gap-2">
-        <span className="text-lg font-semibold">D&D Builder</span>
+        <span className="text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+          D&D Builder
+        </span>
       </div>
 
       {/* Right */}

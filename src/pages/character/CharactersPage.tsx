@@ -39,38 +39,48 @@ export function CharactersPage() {
     )
   }
 
-  if (isLoading) {
-    return <CardListSkeleton count={6} />
-  }
-
   if (isError) {
     return <ErrorDisplay error={error} />
   }
 
-  if (!data || data.length === 0) {
-    return <div>No characters found</div>
-  }
-
   return (
-    <>
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">My Characters</h1>
+    <div className="flex flex-col h-full">
+      <div className="flex items-center justify-between mb-6 gap-4 pb-4 border-b border-border">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">My Characters</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Manage your characters
+          </p>
+        </div>
         <Button onClick={handleCreateCharacter}>Create Character</Button>
       </div>
-      <ul className="space-y-2">
-        {data.map(character => (
-          <li
-            key={character.id}
-            className="border rounded p-3 hover:bg-muted"
-            onClick={() => handleCharacterClick(character.id)}
-          >
-            <div className="font-medium">{character.name}</div>
-            <div className="text-sm text-muted-foreground">
-              Level {character.level} — {character.classIndex}
-            </div>
-          </li>
-        ))}
-      </ul>
-    </>
+      {isLoading ? (
+        <CardListSkeleton count={6} />
+      ) : !data || data.length === 0 ? (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-muted-foreground mb-4">No characters found</p>
+            <Button onClick={handleCreateCharacter}>Create your first character</Button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1 min-h-0 overflow-auto">
+          <ul className="space-y-2">
+            {data.map(character => (
+              <li
+                key={character.id}
+                className="border border-border rounded-lg p-4 hover:bg-accent cursor-pointer transition-colors"
+                onClick={() => handleCharacterClick(character.id)}
+              >
+                <div className="font-medium text-lg">{character.name}</div>
+                <div className="text-sm text-muted-foreground mt-1">
+                  Level {character.level} — {character.classIndex || 'No class'}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   )
 }
