@@ -1,7 +1,7 @@
 import { api } from '@/lib/api/api.client'
 import { mapApiError } from '@/lib/api/api.errors'
 
-type CharacterListItem = {
+export type CharacterListItem = {
   id: string
   name: string
   level: number
@@ -12,7 +12,7 @@ type CharacterListItem = {
   createdAt: string
 }
 
-type Character = {
+export type Character = {
   id: string
   name: string
   level: number
@@ -47,6 +47,10 @@ type AbilityScores = {
   charisma: number | null
 }
 
+type CharacterWritable = Omit<Character, 'id' | 'createdAt' | 'updatedAt'>
+export type UpdateCharacterDto = Partial<Character>
+export type CreateCharacterDto = Partial<CharacterWritable>
+
 export async function getCharacters(): Promise<CharacterListItem[]> {
   try {
     const { data } = await api.get('/characters')
@@ -65,9 +69,23 @@ export async function getCharacter(characterId: string): Promise<Character> {
   }
 }
 
-export async function createCharacter(name: string): Promise<Character> {
+export async function createCharacter(
+  characterData: CreateCharacterDto
+): Promise<Character> {
   try {
-    const { data } = await api.post('/characters', { name })
+    const { data } = await api.post('/characters', characterData)
+    return data
+  } catch (error) {
+    throw mapApiError(error)
+  }
+}
+
+export async function updateCharacter(
+  character: UpdateCharacterDto
+): Promise<Character> {
+  const { id, ...characterData } = character
+  try {
+    const { data } = await api.patch(`/characters/${id}`, characterData)
     return data
   } catch (error) {
     throw mapApiError(error)

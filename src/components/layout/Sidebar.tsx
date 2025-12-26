@@ -2,10 +2,7 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
 
-const navItems = [
-  { label: 'Characters', href: '/characters' },
-  { label: 'Create Character', href: '/builder/name' },
-]
+const navItems = [{ label: 'Characters', href: '/characters' }]
 
 export function Sidebar() {
   return (

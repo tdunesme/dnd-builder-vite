@@ -4,9 +4,9 @@ import {
 } from '@/services/character/character.service'
 
 export const characterKeys = {
-  all: ['characters'] as const,
-  lists: () => [...characterKeys.all, 'list'] as const,
-  detail: (id: string) => [...characterKeys.all, 'detail', id] as const,
+  all: ['characters'],
+  lists: () => [...characterKeys.all, 'list'],
+  detail: (id: string) => [...characterKeys.all, 'detail', id],
 }
 
 export const characterQueries = {

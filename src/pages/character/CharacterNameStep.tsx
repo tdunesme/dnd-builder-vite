@@ -1,30 +1,30 @@
-import { FormActions } from '@/components/form/FormActions'
-import { TextField } from '@/components/form/TextField'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { FieldGroup } from '@/components/ui/field'
-import { useForm } from '@tanstack/react-form'
-import { useCreateCharacter } from '@/hooks/character/useCreateCharacter'
-import { router } from '@/router'
+import { useParams } from '@tanstack/react-router'
+import { useCharacter } from '@/hooks/character/useCharacter'
+import { useUpdateCharacter } from '@/hooks/character/useUpdateCharacter'
+import { CardListSkeleton } from '@/components/characters/CardListSkeleton'
+import { NameStepForm } from '@/components/characters/name/name-step-form'
 
 export function CharacterNameStep() {
-  const createCharacterMutation = useCreateCharacter()
+  const updateCharacterMutation = useUpdateCharacter()
+  const { characterId } = useParams({ strict: false })
+  const {
+    data: character,
+    isLoading,
+    isError,
+    error,
+  } = useCharacter(characterId)
 
-  const form = useForm({
-    defaultValues: {
-      name: '',
-    },
-    onSubmit: async ({ value }) => {
-      createCharacterMutation.mutate(value.name, {
-        onSuccess: character => {
-          router.navigate({
-            to: '/builder/$characterId/name',
-            params: { characterId: character.id },
-          })
-        },
-      })
-    },
-  })
+  if (isLoading) {
+    return <CardListSkeleton count={6} />
+  }
+
+  if (isError || !character) {
+    return (
+      <div>Error: {(error as Error)?.message ?? 'Character not found'}</div>
+    )
+  }
+
   return (
     <div className="max-w-md mx-auto">
       <Card>
@@ -34,28 +34,10 @@ export function CharacterNameStep() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form
-            onSubmit={e => {
-              e.preventDefault()
-              e.stopPropagation()
-              form.handleSubmit()
-            }}
-          >
-            <FieldGroup>
-              <form.Field
-                name="name"
-                validators={{
-                  onChange: ({ value }) =>
-                    !value ? 'Name is required' : undefined,
-                }}
-              >
-                {field => <TextField field={field} label="Name" />}
-              </form.Field>
-              <FormActions>
-                <Button type="submit">Next</Button>
-              </FormActions>
-            </FieldGroup>
-          </form>
+          <NameStepForm
+            character={character}
+            updateCharacterMutation={updateCharacterMutation}
+          />
         </CardContent>
       </Card>
     </div>

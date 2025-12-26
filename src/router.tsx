@@ -9,7 +9,7 @@ import {
 import { AppLayout } from '@/layouts/AppLayout'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { CharacterNameStep } from '@/pages/character/CharacterNameStep'
-
+import { CharacterClassStep } from '@/pages/character/CharacterClassStep'
 // Pages (UI only pour l’instant)
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { SignupPage } from '@/pages/auth/SignupPage'
@@ -113,7 +113,6 @@ const builderRoute = new Route({
   component: () => <Outlet />,
 })
 
-// Route avec paramètre DOIT être définie AVANT la route statique
 const characterNameEditRoute = new Route({
   getParentRoute: () => builderRoute,
   path: '$characterId/name',
@@ -126,6 +125,12 @@ const characterNameCreateRoute = new Route({
   component: CharacterNameStep,
 })
 
+const characterClassEditRoute = new Route({
+  getParentRoute: () => builderRoute,
+  path: '$characterId/class',
+  component: CharacterClassStep,
+})
+
 /* ------------------------------------------------------------ */
 
 const routeTree = rootRoute.addChildren([
@@ -134,8 +139,9 @@ const routeTree = rootRoute.addChildren([
   appRoute.addChildren([
     charactersRoute,
     builderRoute.addChildren([
-      characterNameEditRoute, // Route avec paramètre en premier
+      characterNameEditRoute,
       characterNameCreateRoute,
+      characterClassEditRoute,
     ]),
   ]),
 ])
