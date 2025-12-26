@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { ErrorDisplay } from '@/components/ui/error-display'
 import { useCharacter } from '@/hooks/character/useCharacter'
-import { classQueries } from '@/queries/class.queries'
+import { raceQueries } from '@/queries/race.queries'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 import { useState } from 'react'
@@ -10,16 +10,16 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { router } from '@/router'
 import { useUpdateCharacter } from '@/hooks/character/useUpdateCharacter'
-import { Check, Shield } from 'lucide-react'
+import { Check, Users } from 'lucide-react'
 import { toast } from 'sonner'
 
-export function CharacterClassStep() {
+export function CharacterRaceStep() {
   const {
-    data: classes,
-    isLoading: isClassesLoading,
-    isError: isClassesError,
-    error: classesError,
-  } = useQuery(classQueries.list())
+    data: races,
+    isLoading: isRacesLoading,
+    isError: isRacesError,
+    error: racesError,
+  } = useQuery(raceQueries.list())
 
   const updateCharacterMutation = useUpdateCharacter()
 
@@ -31,38 +31,37 @@ export function CharacterClassStep() {
     error: characterError,
   } = useCharacter(characterId)
 
-  const [selectedClass, setSelectedClass] = useState<string | null>(
-    character?.classIndex ?? null
+  const [selectedRace, setSelectedRace] = useState<string | null>(
+    character?.raceIndex ?? null
   )
 
-  const handleClassClick = (classIndex: string) => {
-    setSelectedClass(classIndex)
+  const handleRaceClick = (raceIndex: string) => {
+    setSelectedRace(raceIndex)
   }
 
   const handleNextClick = () => {
-    if (!selectedClass || !character?.id) return
+    if (!selectedRace || !character?.id) return
 
     updateCharacterMutation.mutate(
       {
         id: character.id,
-        classIndex: selectedClass,
+        raceIndex: selectedRace,
       },
       {
         onSuccess: () => {
-          toast.success('Class updated successfully')
+          toast.success('Race updated successfully')
           router.navigate({
-            to: '/builder/$characterId/background',
-            params: { characterId },
+            to: '/characters',
           })
         },
         onError: () => {
-          toast.error('Failed to update character class')
+          toast.error('Failed to update character race')
         },
       }
     )
   }
 
-  if (isClassesLoading || isCharacterLoading) {
+  if (isRacesLoading || isCharacterLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <div className="w-full max-w-4xl space-y-6">
@@ -77,11 +76,11 @@ export function CharacterClassStep() {
     )
   }
 
-  if (isClassesError || !classes) {
+  if (isRacesError || !races) {
     return (
       <ErrorDisplay
-        error={classesError ?? 'Failed to load classes'}
-        title="Error loading classes"
+        error={racesError ?? 'Failed to load races'}
+        title="Error loading races"
       />
     )
   }
@@ -100,34 +99,34 @@ export function CharacterClassStep() {
       <div className="w-full max-w-4xl space-y-6">
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Shield className="size-6 text-primary" />
+            <Users className="size-6 text-primary" />
             <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              Choose Your Class
+              Choose Your Race
             </h1>
           </div>
           <p className="text-sm text-muted-foreground">
-            Select your character's class
+            Select your character's race
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {classes.map(classData => {
-            const isSelected = selectedClass === classData.index
+          {races.map(raceData => {
+            const isSelected = selectedRace === raceData.index
             return (
               <Card
-                key={classData.index}
+                key={raceData.index}
                 className={cn(
                   'cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-[1.02] border-2',
                   isSelected
                     ? 'border-primary bg-primary/5 shadow-lg scale-[1.02]'
                     : 'border-border hover:border-primary/50'
                 )}
-                onClick={() => handleClassClick(classData.index)}
+                onClick={() => handleRaceClick(raceData.index)}
               >
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg font-semibold">
-                      {classData.name}
+                      {raceData.name}
                     </CardTitle>
                     {isSelected && (
                       <div className="flex items-center justify-center size-6 rounded-full bg-primary text-primary-foreground">
@@ -149,14 +148,15 @@ export function CharacterClassStep() {
         <div className="flex justify-center pt-4">
           <Button
             onClick={handleNextClick}
-            disabled={!selectedClass}
+            disabled={!selectedRace}
             size="lg"
             className="min-w-[200px]"
           >
-            {selectedClass ? 'Continue' : 'Select a class'}
+            {selectedRace ? 'Continue' : 'Select a race'}
           </Button>
         </div>
       </div>
     </div>
   )
 }
+

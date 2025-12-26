@@ -32,6 +32,32 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
   }
 }
 
+export type SignupPayload = {
+  email: string
+  password: string
+  firstName: string
+  lastName: string
+}
+
+export type SignupResponse = {
+  user: {
+    id: string
+    email: string
+    firstName: string
+    lastName: string
+  }
+  accessToken: string
+}
+
+export async function signup(payload: SignupPayload): Promise<SignupResponse> {
+  try {
+    const { data } = await api.post('/auth/signup', payload)
+    return data
+  } catch (error) {
+    throw mapApiError(error)
+  }
+}
+
 export async function getMe(): Promise<AuthUser> {
   try {
     const { data } = await api.get('/auth/me')

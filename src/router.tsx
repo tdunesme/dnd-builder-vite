@@ -10,6 +10,8 @@ import { AppLayout } from '@/layouts/AppLayout'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { CharacterNameStep } from '@/pages/character/CharacterNameStep'
 import { CharacterClassStep } from '@/pages/character/CharacterClassStep'
+import { CharacterRaceStep } from '@/pages/character/CharacterRaceStep'
+import { CharacterBackgroundStep } from '@/pages/character/CharacterBackgroundStep'
 // Pages (UI only pour l’instant)
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { SignupPage } from '@/pages/auth/SignupPage'
@@ -139,6 +141,18 @@ const characterClassEditRoute = new Route({
   component: CharacterClassStep,
 })
 
+const characterRaceEditRoute = new Route({
+  getParentRoute: () => builderRoute,
+  path: '$characterId/race',
+  component: CharacterRaceStep,
+})
+
+const characterBackgroundEditRoute = new Route({
+  getParentRoute: () => builderRoute,
+  path: '$characterId/background',
+  component: CharacterBackgroundStep,
+})
+
 /* Rules Routes */
 
 const rulesRoute = new Route({
@@ -238,7 +252,12 @@ const routeTree = rootRoute.addChildren([
   authRoute.addChildren([loginRoute, signupRoute]),
   appRoute.addChildren([
     charactersRoute,
-    builderRoute.addChildren([characterNameEditRoute, characterClassEditRoute]),
+    builderRoute.addChildren([
+      characterNameEditRoute,
+      characterClassEditRoute,
+      characterRaceEditRoute,
+      characterBackgroundEditRoute,
+    ]),
     rulesRoute.addChildren([
       classesRoute,
       classRoute,
