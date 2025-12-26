@@ -3,6 +3,7 @@ import { useParams } from '@tanstack/react-router'
 import { useCharacter } from '@/hooks/character/useCharacter'
 import { useUpdateCharacter } from '@/hooks/character/useUpdateCharacter'
 import { CardListSkeleton } from '@/components/characters/CardListSkeleton'
+import { ErrorDisplay } from '@/components/ui/error-display'
 import { NameStepForm } from '@/components/characters/name/name-step-form'
 
 export function CharacterNameStep() {
@@ -21,7 +22,10 @@ export function CharacterNameStep() {
 
   if (isError || !character) {
     return (
-      <div>Error: {(error as Error)?.message ?? 'Character not found'}</div>
+      <ErrorDisplay
+        error={error ?? 'Character not found'}
+        title={error ? 'Error' : 'Not Found'}
+      />
     )
   }
 

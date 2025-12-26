@@ -7,15 +7,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { ModeToggle } from '@/components/ui/mode-toggle'
-import { useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
-import type { AuthUser } from '@/services/auth/auth.service'
 import { useLogout } from '@/hooks/auth/useLogout'
+import { useAuth } from '@/hooks/auth/useAuth'
 
 export function Header() {
   const logout = useLogout()
-  const queryClient = useQueryClient()
-  const user: AuthUser | undefined = queryClient.getQueryData(['me'])
+  const user = useAuth()
   const isAuthenticated = !!user
   const userInitial =
     (user?.firstName?.charAt(0) ?? '') + (user?.lastName?.charAt(0) ?? '')

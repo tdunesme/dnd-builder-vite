@@ -17,6 +17,20 @@ import { CharactersPage } from '@/pages/character/CharactersPage'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { getMe } from './services/auth/auth.service'
 import { queryClient } from './lib/query/queryClient'
+import { ClassesPage } from './pages/Rules/Classes'
+import { BackgroundsPage } from './pages/Rules/Backgrounds'
+import { SpellsPage } from './pages/Rules/Spells'
+import { MonstersPage } from './pages/Rules/Monsters'
+import { ItemsPage } from './pages/Rules/Items'
+import { FeatsPage } from './pages/Rules/Feats'
+import { RacesPage } from './pages/Rules/Races'
+import { Spell } from './pages/Rules/Spell'
+import { Class } from './pages/Rules/Class'
+import { Race } from './pages/Rules/Race'
+import { Background } from './pages/Rules/Background'
+import { Feat } from './pages/Rules/Feat'
+import { Item } from './pages/Rules/Item'
+import { Monster } from './pages/Rules/Monster'
 
 const rootRoute = new RootRoute({
   component: () => (
@@ -119,16 +133,102 @@ const characterNameEditRoute = new Route({
   component: CharacterNameStep,
 })
 
-const characterNameCreateRoute = new Route({
-  getParentRoute: () => builderRoute,
-  path: 'name',
-  component: CharacterNameStep,
-})
-
 const characterClassEditRoute = new Route({
   getParentRoute: () => builderRoute,
   path: '$characterId/class',
   component: CharacterClassStep,
+})
+
+/* Rules Routes */
+
+const rulesRoute = new Route({
+  getParentRoute: () => appRoute,
+  path: 'rules',
+  component: () => <Outlet />,
+})
+
+const classesRoute = new Route({
+  getParentRoute: () => rulesRoute,
+  path: 'classes',
+  component: ClassesPage,
+})
+
+const classRoute = new Route({
+  getParentRoute: () => rulesRoute,
+  path: 'classes/$classIndex',
+  component: Class,
+})
+
+const racesRoute = new Route({
+  getParentRoute: () => rulesRoute,
+  path: 'races',
+  component: RacesPage,
+})
+
+const raceRoute = new Route({
+  getParentRoute: () => rulesRoute,
+  path: 'races/$raceIndex',
+  component: Race,
+})
+
+const backgroundsRoute = new Route({
+  getParentRoute: () => rulesRoute,
+  path: 'backgrounds',
+  component: BackgroundsPage,
+})
+
+const backgroundRoute = new Route({
+  getParentRoute: () => rulesRoute,
+  path: 'backgrounds/$backgroundIndex',
+  component: Background,
+})
+
+const featsRoute = new Route({
+  getParentRoute: () => rulesRoute,
+  path: 'feats',
+  component: FeatsPage,
+})
+
+const featRoute = new Route({
+  getParentRoute: () => rulesRoute,
+  path: 'feats/$featIndex',
+  component: Feat,
+})
+
+const spellsRoute = new Route({
+  getParentRoute: () => rulesRoute,
+  path: 'spells',
+  component: SpellsPage,
+})
+
+const spellRoute = new Route({
+  getParentRoute: () => rulesRoute,
+  path: 'spells/$spellIndex',
+  component: Spell,
+})
+
+const itemsRoute = new Route({
+  getParentRoute: () => rulesRoute,
+  path: 'items',
+  component: ItemsPage,
+})
+
+const itemRoute = new Route({
+  getParentRoute: () => rulesRoute,
+  path: 'items/$itemIndex',
+  component: Item,
+})
+
+const monstersRoute = new Route({
+  getParentRoute: () => rulesRoute,
+  path: 'monsters',
+  component: MonstersPage,
+})
+
+const monsterRoute = new Route({
+  getParentRoute: () => rulesRoute,
+  path: 'monsters/$monsterIndex',
+  component: Monster,
 })
 
 /* ------------------------------------------------------------ */
@@ -138,10 +238,22 @@ const routeTree = rootRoute.addChildren([
   authRoute.addChildren([loginRoute, signupRoute]),
   appRoute.addChildren([
     charactersRoute,
-    builderRoute.addChildren([
-      characterNameEditRoute,
-      characterNameCreateRoute,
-      characterClassEditRoute,
+    builderRoute.addChildren([characterNameEditRoute, characterClassEditRoute]),
+    rulesRoute.addChildren([
+      classesRoute,
+      classRoute,
+      racesRoute,
+      raceRoute,
+      backgroundsRoute,
+      backgroundRoute,
+      featsRoute,
+      featRoute,
+      spellsRoute,
+      spellRoute,
+      itemsRoute,
+      itemRoute,
+      monstersRoute,
+      monsterRoute,
     ]),
   ]),
 ])
